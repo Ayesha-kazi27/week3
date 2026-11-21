@@ -102,7 +102,7 @@ flowchart TD
 4. **Password recovery** — Display any successfully recovered password.
 5. **Verification** — Confirm that the recovered password opens the original PDF.
 6. **Completion** — Capture the training platform's completion flag.
-
+ 
 </details>
 
 ---
