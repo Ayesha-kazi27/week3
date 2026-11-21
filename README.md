@@ -1,4 +1,5 @@
 # 🔐 PDF Password Security
+
 ### Hash Extraction · Dictionary Attacks · Password Recovery
 
 <p align="center">
@@ -8,9 +9,8 @@
 </p>
 
 <p align="center">
-  <b>Week 03 | Networkwalks Cybersecurity Internship</b>
-  <br/>
-  <i>Understanding PDF password security through practical command-line auditing.</i>
+  <b>Week 03 | Networkwalks Cybersecurity Internship</b><br/>
+  <i>Practical exploration of PDF password auditing using CLI tools and hash comparison.</i>
 </p>
 
 ---
@@ -18,18 +18,16 @@
 ## ⚡ Mission Brief
 
 > [!IMPORTANT]
-> This repository documents my Week 03 cybersecurity practicals involving password-protected PDF documents, PDF hash extraction, dictionary-based password auditing, and password verification.
+> This repository documents my Week 03 cybersecurity practicals involving password-protected PDF documents, hash extraction, dictionary-based password auditing, password recovery, and verification.
 
-The practical was divided into two modules:
+The practical consisted of two modules:
 
 | Module | Objective | Tools |
 |:---:|---|---|
-| `01` | Audit a PDF password through the CLI | John the Ripper |
+| `01` | Recover a PDF password using a dictionary attack | John the Ripper CLI |
 | `02` | Extract and compare PDF password hashes | Networkwalks Hash Calculator & Comparison Tool |
 
-The primary focus of this repository is **John the Ripper CLI**, demonstrating the workflow from hash extraction to password recovery and verification.
-
----
+The first module focused on the command-line workflow, while the second demonstrated password hash analysis through the Networkwalks tools.
 
 ## 🧭 Navigation
 
@@ -45,7 +43,7 @@ The primary focus of this repository is **John the Ripper CLI**, demonstrating t
 - [Key Learnings](#-key-learnings)
 - [Security Recommendations](#-security-recommendations)
 - [Repository Structure](#-repository-structure)
-- [Disclaimer](#-disclaimer)
+- [Disclaimer](#️-disclaimer)
 
 </details>
 
@@ -64,12 +62,12 @@ The primary focus of this repository is **John the Ripper CLI**, demonstrating t
 |---|---|
 | Trainee | Ayesha Kazi |
 | Organization | Networkwalks |
-| Internship Week | Week 03 |
+| Internship | Week 03 |
 | Operating System | Kali Linux |
 | Primary Tool | John the Ripper CLI |
 | Attack Method | Dictionary-based password auditing |
 | Target | Authorized password-protected PDF |
-| Verification | PDF viewer |
+| Verification | Original PDF document |
 
 ---
 
@@ -85,7 +83,7 @@ flowchart TD
     F -->|Yes| G["Display Recovered Password"]
     G --> H["Verify Against Original PDF"]
     H --> I["Capture Completion Flag"]
-    F -->|No| J["Review Wordlist / Hash Format"]
+    F -->|No| J["Review Hash / Wordlist"]
     J --> E
 
     style A fill:#161B22,stroke:#8B0000,color:#FFFFFF
@@ -94,7 +92,7 @@ flowchart TD
 ```
 
 <details>
-<summary><b>🔎 What happens at each stage?</b></summary>
+<summary><b>🔎 Workflow breakdown</b></summary>
 
 1. **Hash extraction** — Extract password-verification information from the encrypted PDF.
 2. **Hash preparation** — Save the extracted output in a file compatible with John the Ripper.
@@ -115,11 +113,10 @@ flowchart TD
 
 ## 01. Check the installation
 
-First, I checked whether John the Ripper was available in my Kali Linux environment.
+I checked the John the Ripper build information in my Kali Linux environment.
 
 ```bash
 john --list=build-info
-
 ```
 
 To explore the available options:
@@ -129,9 +126,9 @@ john --help
 ```
 
 <details>
-<summary><b>📸 Screenshot — John the Ripper version</b></summary>
+<summary><b>📸 John the Ripper version</b></summary>
 
-![John the Ripper version](screenshots/01-john-version.png)
+![John the Ripper version](screenshots/john-version.png)
 
 </details>
 
@@ -139,45 +136,32 @@ john --help
 
 ## 02. Locate the PDF hash extraction utility
 
-A compatible PDF hash extraction utility is required before running John the Ripper against an encrypted PDF.
-
-I located the extraction script available in my installation.
+Before auditing an encrypted PDF, I located the PDF hash extraction utility available in my John the Ripper installation.
 
 ```bash
 find /usr/share/john -iname '*pdf2john*'
 ```
 
-The script name and location may vary depending on the installed John the Ripper version.
+The extractor's filename and location may vary depending on the installed version.
+
 ---
 
 ## 03. Extract the PDF hash
 
-The authorized training PDF was processed using the PDF hash extraction utility.
+The PDF hash extraction utility was used to process the authorized training document.
 
-Example command for a Python-based extractor:
+The extracted output was saved to `pdf_hash.txt`.
 
 ```bash
-pdf2john My\ Locked\ PDF1.pdf > pdf_hash.txt  
+pdf2john "My Locked PDF1.pdf" > pdf_hash.txt
 ```
 
-If your installation provides a Perl-based script, use the corresponding Perl command instead.
-
-The extracted output was saved to:
-
-```text
-pdf_hash.txt
-```
-
-The hash representation commonly begins with:
-
-```text
-$pdf$
-```
+If the extractor is not available as a command, use the path returned by the `find` command and run the appropriate Python or Perl script.
 
 <details>
-<summary><b>📸 Screenshot — Extracted PDF hash</b></summary>
+<summary><b>📸 Extracted PDF hash</b></summary>
 
-![Extracted PDF hash](screenshots/03-extracted-pdf-hash.png)
+![Extracted PDF hash](screenshots/extracted-pdf-hash.png)
 
 </details>
 
@@ -190,22 +174,23 @@ $pdf$
 
 A dictionary attack uses a list of candidate passwords.
 
-A commonly used Kali Linux wordlist is:
+The wordlist used in this practical was:
 
 ```text
 /usr/share/wordlists/rockyou.txt
 ```
 
-If it is compressed, decompress it while retaining the original archive:
+If the wordlist is compressed, decompress it while retaining the original archive:
 
 ```bash
 sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
 ```
+
 ---
 
 ## 05. Execute the dictionary attack
 
-With the extracted hash and wordlist prepared, I used John the Ripper CLI to begin the password audit.
+With the extracted hash and wordlist prepared, I used John the Ripper CLI to perform the password audit.
 
 ```bash
 john --wordlist=/usr/share/wordlists/rockyou.txt pdf_hash.txt
@@ -214,9 +199,9 @@ john --wordlist=/usr/share/wordlists/rockyou.txt pdf_hash.txt
 John the Ripper tested candidate passwords from the specified wordlist against the extracted PDF hash.
 
 <details>
-<summary><b>📸 Screenshot — John the Ripper running in terminal</b></summary>
+<summary><b>📸 John the Ripper dictionary attack</b></summary>
 
-![John the Ripper dictionary attack](screenshots/05-john-cli-dictionary-attack.png)
+![John the Ripper dictionary attack](screenshots/john-dict-attack.png)
 
 </details>
 
@@ -233,9 +218,9 @@ john --show pdf_hash.txt
 This command displays passwords successfully recovered for hashes in the specified file.
 
 <details>
-<summary><b>📸 Screenshot — Password recovery</b></summary>
+<summary><b>📸 Password recovery result</b></summary>
 
-![John the Ripper password recovery](screenshots/06-john-cli-password-recovered.png)
+![Recovered password](screenshots/pswd-recovered.png)
 
 </details>
 
@@ -243,7 +228,7 @@ This command displays passwords successfully recovered for hashes in the specifi
 
 ## 07. Verify the password
 
-The recovered password was entered into the password prompt of the original PDF.
+I entered the recovered password into the password prompt of the original PDF.
 
 Successful access confirmed that the recovered password was valid for the training document.
 
@@ -258,9 +243,9 @@ nw{cybersecurity_flag_captured_2608}
 ```
 
 <details>
-<summary><b>🏁 View completion screenshot</b></summary>
+<summary><b>🏁 Module 01 completion screenshot</b></summary>
 
-![John the Ripper CLI flag](screenshots/08-jtr-cli-flag.png)
+![Module 01 captured flag](screenshots/captured-flag-1.png)
 
 </details>
 
@@ -310,7 +295,7 @@ I opened the Networkwalks Hash Calculator and selected the PDF hash extraction o
 
 The encrypted training document was processed, and the tool generated a PDF-compatible hash representation.
 
-![Networkwalks Hash Calculator](screenshots/09-networkwalks-hash-calculator.png)
+![Networkwalks Hash Calculator](screenshots/networkwalks-hash-calculation.png)
 
 </details>
 
@@ -319,8 +304,6 @@ The encrypted training document was processed, and the tool generated a PDF-comp
 
 I entered the extracted PDF hash into the Networkwalks Comparison Tool and initiated the dictionary-based comparison process.
 
-![Networkwalks Comparison Tool](screenshots/10-networkwalks-comparison-tool.png)
-
 </details>
 
 <details>
@@ -328,7 +311,7 @@ I entered the extracted PDF hash into the Networkwalks Comparison Tool and initi
 
 The comparison process identified a matching password candidate and displayed a successful completion notification.
 
-![Networkwalks password match](screenshots/11-networkwalks-password-match.png)
+![Networkwalks password match](screenshots/networkwalks-pass-match.png)
 
 </details>
 
@@ -350,26 +333,26 @@ After completing the second practical, I captured the flag displayed by the Netw
 nw{networkwalks_flag1_jtr_270521_1}
 ```
 
-![Networkwalks completion flag](screenshots/13-networkwalks-flag.png)
+![Module 02 captured flag](screenshots/captured-flag-2.png)
 
 </details>
 
 ---
 
-# 🏆 Results & Flags
+## 🏆 Results & Flags
 
 | Module | Tool | Outcome |
 |---|---|---|
 | `01` | John the Ripper CLI | Password successfully recovered |
-| `02` | Networkwalks Hash Calculator + Comparison Tool | Password match identified |
+| `02` | Networkwalks Hash Calculator & Comparison Tool | Password match identified |
 
 <details>
 <summary><b>🏁 Click to reveal completion flags</b></summary>
 
 | Module | Flag |
 |---|---|
-| Module 01 | `[Insert actual flag]` |
-| Module 02 | `[Insert actual flag]` |
+| Module 01 | `nw{cybersecurity_flag_captured_2608}` |
+| Module 02 | `nw{networkwalks_flag1_jtr_270521_1}` |
 
 </details>
 
@@ -440,32 +423,24 @@ Week-03-PDF-Password-Security/
 │
 ├── README.md
 │
-├── screenshots/
-│   ├── 01-john-version.png
-│   ├── 02-pdf-hash-extraction-tool.png
-│   ├── 03-extracted-pdf-hash.png
-│   ├── 04-wordlist-preparation.png
-│   ├── 05-john-cli-dictionary-attack.png
-│   ├── 06-john-cli-password-recovered.png
-│   ├── 07-pdf-password-verification.png
-│   ├── 08-jtr-cli-flag.png
-│   ├── 09-networkwalks-hash-calculator.png
-│   ├── 10-networkwalks-comparison-tool.png
-│   ├── 11-networkwalks-password-match.png
-│   ├── 12-networkwalks-pdf-verification.png
-│   └── 13-networkwalks-flag.png
-│
-└── notes/
-    └── lab-notes.md
+└── screenshots/
+    ├── captured-flag-1.png
+    ├── captured-flag-2.png
+    ├── extracted-pdf-hash.png
+    ├── john-dict-attack.png
+    ├── john-version.png
+    ├── networkwalks-hash-calculation.png
+    ├── networkwalks-pass-match.png
+    └── pswd-recovered.png
 ```
 
 ---
 
 ## 💡 Final Takeaway
 
-This practical connected theoretical concepts such as encryption, hashing, password verification, and dictionary attacks with hands-on cybersecurity tools.
+This practical connected concepts such as encryption, hashing, password verification, and dictionary attacks with hands-on cybersecurity tools.
 
-Through John the Ripper CLI, I explored the complete workflow of extracting a PDF hash, preparing a wordlist, executing a dictionary attack, recovering a password, and verifying it against the original document.
+Through John the Ripper CLI, I explored the workflow of extracting a PDF hash, preparing a wordlist, executing a dictionary attack, recovering a password, and verifying it against the original document.
 
 The Networkwalks tools module further demonstrated how hash extraction and dictionary comparison can be performed through a separate workflow.
 
@@ -484,10 +459,8 @@ The techniques demonstrated here are intended for legitimate password security a
 ---
 
 <p align="center">
-  <b>👩‍💻 Ayesha Kazi</b>
-  <br/>
-  Cybersecurity Intern | Networkwalks
-  <br/><br/>
+  <b>👩‍💻 Ayesha Kazi</b><br/>
+  Cybersecurity Intern | Networkwalks<br/><br/>
   <img src="https://img.shields.io/badge/LEARN-8B0000?style=flat-square" alt="Learn"/>
   <img src="https://img.shields.io/badge/ANALYZE-161B22?style=flat-square" alt="Analyze"/>
   <img src="https://img.shields.io/badge/SECURE-238636?style=flat-square" alt="Secure"/>
