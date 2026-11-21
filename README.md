@@ -118,7 +118,8 @@ flowchart TD
 First, I checked whether John the Ripper was available in my Kali Linux environment.
 
 ```bash
-john --version
+john --list=build-info
+
 ```
 
 To explore the available options:
@@ -147,14 +148,6 @@ find /usr/share/john -iname '*pdf2john*'
 ```
 
 The script name and location may vary depending on the installed John the Ripper version.
-
-<details>
-<summary><b>📸 Screenshot — Hash extraction utility</b></summary>
-
-![PDF hash extraction utility](screenshots/02-pdf-hash-extraction-tool.png)
-
-</details>
-
 ---
 
 ## 03. Extract the PDF hash
@@ -164,7 +157,7 @@ The authorized training PDF was processed using the PDF hash extraction utility.
 Example command for a Python-based extractor:
 
 ```bash
-python3 /path/to/pdf2john.py "My Locked PDF1.pdf" > pdf_hash.txt
+pdf2john My\ Locked\ PDF1.pdf > pdf_hash.txt  
 ```
 
 If your installation provides a Perl-based script, use the corresponding Perl command instead.
@@ -208,14 +201,6 @@ If it is compressed, decompress it while retaining the original archive:
 ```bash
 sudo gzip -dk /usr/share/wordlists/rockyou.txt.gz
 ```
-
-<details>
-<summary><b>📸 Screenshot — Wordlist preparation</b></summary>
-
-![Wordlist preparation](screenshots/04-wordlist-preparation.png)
-
-</details>
-
 ---
 
 ## 05. Execute the dictionary attack
@@ -262,13 +247,6 @@ The recovered password was entered into the password prompt of the original PDF.
 
 Successful access confirmed that the recovered password was valid for the training document.
 
-<details>
-<summary><b>📸 Screenshot — PDF unlocked successfully</b></summary>
-
-![PDF password verification](screenshots/07-pdf-password-verification.png)
-
-</details>
-
 ---
 
 ## 08. Capture the flag
@@ -276,7 +254,7 @@ Successful access confirmed that the recovered password was valid for the traini
 After completing the practical, I captured the completion flag displayed by the Networkwalks training platform.
 
 ```text
-[Insert your actual Module 1 flag]
+nw{cybersecurity_flag_captured_2608}
 ```
 
 <details>
