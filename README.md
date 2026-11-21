@@ -339,8 +339,6 @@ I used the recovered password to open the corresponding protected PDF.
 
 The document accepted the password and opened successfully.
 
-![Networkwalks PDF verification](screenshots/12-networkwalks-pdf-verification.png)
-
 </details>
 
 <details>
@@ -349,7 +347,7 @@ The document accepted the password and opened successfully.
 After completing the second practical, I captured the flag displayed by the Networkwalks training platform.
 
 ```text
-[Insert your actual Module 2 flag]
+nw{networkwalks_flag1_jtr_270521_1}
 ```
 
 ![Networkwalks completion flag](screenshots/13-networkwalks-flag.png)
